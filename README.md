@@ -1,5 +1,5 @@
 # MPLS Core from a [EVE-NG](http://www.eve-ng.net/) virtual lab
-> A set of example configs for the site page: https://sipart.github.io/core_on_a_page/
+A set of example configs for the site page: https://sipart.github.io/core_on_a_page/
 
 * The core is using ISIS as the IGP. RSVP as the LDP
 * The LSPs are free running - NOT pre signalled
