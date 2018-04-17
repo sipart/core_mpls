@@ -1,0 +1,144 @@
+
+## Last changed: 2017-06-29 17:05:38 UTC
+version 12.1X47-D15.4;
+system {
+    host-name oak02-r1;
+    root-authentication {
+        encrypted-password "$1$tHCqSfkh$Wdx02vFqotluS7ophE9Hf1";
+    }
+    login {
+        user ansible {
+            uid 2001;
+            class super-user;
+            authentication {
+                ssh-rsa "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTSI46N5CEzLtC0MHMeWgTKy/BO0A4ASFpgK0VljvMOmhB2fTrGazaKToMJAxBB5VXUK6cdGZP1qeaBwv3g08ORKGFdubvwY6z0bFxrpU1bKjcb46UtYe/7PNZQOxOUdV26YMbD7UOkqps0+/CROqyLtL3DXGIcBTEVPb3R0168jTy83HLRRWcCByWkEvGwsl+v/Ss5wu0gQl8Pmf34gjJ95LfTfspRw0GcTQC+lTgyUtgQUlqtlxQOS6LjqhgS+509WWDFrAee7IxGJi1AUt7OSMHShGtbTFzzxq50z1ujb7jk9pF+nj4Jmr+dOzMyh9NOgS6AkOPRZ6fep/UGPUH ansible";
+            }
+        }
+        user lab {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$1$E3KNUq2A$NfM9J/k6Z72Zf4P3LnQNN/";
+            }
+        }
+    }
+    services {
+        ssh;
+        netconf {
+            ssh;
+        }
+    }
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any any;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        description mgmt;
+        unit 0 {
+            family inet {
+                address 192.168.0.213/24;
+            }
+        }
+    }
+    ge-0/0/1 {
+        description "Link to vmx2 via sw01-nni-2";
+        vlan-tagging;
+        unit 2002 {
+            description "VPN0004 RI0002";
+            vlan-id 2002;
+            family inet {
+                address 10.20.0.6/30;
+            }
+        }
+    }
+    ge-0/0/3 {
+        unit 0 {
+            family inet {
+                address 10.5.21.1/24;
+            }
+        }
+    }
+}
+policy-options {
+    policy-statement EXPORT-DIRECT {
+        from protocol direct;
+        then accept;
+    }
+}
+security {
+    forwarding-options {
+        family {
+            inet6 {
+                mode packet-based;
+            }
+            mpls {
+                mode packet-based;
+            }
+        }
+    }
+}
+routing-instances {
+    RI0002 {
+        instance-type virtual-router;
+        system {
+            services {
+                dhcp-local-server {
+                    group oak02-group {
+                        interface ge-0/0/3.0;
+                    }
+                }
+            }
+        }
+        access {
+            address-assignment {
+                pool oak02-pool {
+                    family inet {
+                        network 10.5.21.0/24;
+                        range oak02-range {
+                            low 10.5.21.10;
+                            high 10.5.21.20;
+                        }
+                        dhcp-attributes {
+                            maximum-lease-time 10800;
+                            router {
+                                10.5.21.1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        interface ge-0/0/1.2002;
+        interface ge-0/0/3.0;
+        routing-options {
+            autonomous-system 65001;
+        }
+        protocols {
+            bgp {
+                group CORE-PEER {
+                    type external;
+                    export EXPORT-DIRECT;
+                    neighbor 10.20.0.5 {
+                        authentication-key "$9$88F7VYg4ZjHm2gTz39tpWLxNwY";
+                        peer-as 100;
+                    }
+                }
+            }
+        }
+    }
+}
