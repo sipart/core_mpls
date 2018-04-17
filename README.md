@@ -1,9 +1,9 @@
 # MPLS Core from a [EVE-NG](http://www.eve-ng.net/) virtual lab
 A set of example configs for the site page: https://sipart.github.io/core_on_a_page/
 
-* The core is using ISIS as the IGP
+* MPLS core is using ISIS as the IGP
 * RSVP as the LDP
-* The LSPs are free running - not pre signalled
+* LSPs are free running - not pre signalled
 * vMX images are all QEMU Junos v14.1R10
 * vMX2 is the route reflector
 * NNI switches are comprised of one CumulusVX QEMU image and one Cisco IOL v15.1 image
