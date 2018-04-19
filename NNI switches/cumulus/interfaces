@@ -17,11 +17,11 @@ auto bridge
 iface bridge
  bridge-vlan-aware yes
  bridge-ports swp1 swp2 swp3
- bridge-vids 2001 2002 101 102 103
+ bridge-vids 2001 2002
 
 auto swp1
 iface swp1
-bridge-vids 2001 101
+bridge-vids 2001
 
 auto swp2
 iface swp2
@@ -29,4 +29,4 @@ bridge-vids 2002
 
 auto swp3
 iface swp3
-bridge-vids 2001 2002 101 102 103
+bridge-vids 2001 2002
